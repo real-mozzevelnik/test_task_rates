@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:12.21
+    container_name: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: rates_service
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: always
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+  
+  rates_service:
+    build:
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: rates_service
+      DB_USER: admin
+      DB_PASSWORD: admin
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_started
+      rates_service_migration:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+
+  rates_service_migration:
+    build:
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: rates_service
+      DB_USER: admin
+      DB_PASSWORD: admin
+    command: bash -c "alembic revision --autogenerate && alembic upgrade head"
+    depends_on:
+      postgres:
+          condition: service_started
+
+volumes:
+  pgdata:
+    driver: local
