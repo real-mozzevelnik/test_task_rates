@@ -9,6 +9,7 @@ class RatesUpsertDataObject(BaseModel):
     
 class RatesUpsert(BaseModel):
     rates: List[RatesUpsertDataObject] = Field(description="Список тарифов")
+    user_id: str
 
 
 class RatesDeleteDataObject(BaseModel):
@@ -17,3 +18,4 @@ class RatesDeleteDataObject(BaseModel):
 
 class RatesDelete(BaseModel):
     rates: List[RatesDeleteDataObject] = Field(description="Список тарифов")
+    user_id: str

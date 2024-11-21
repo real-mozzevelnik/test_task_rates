@@ -6,6 +6,10 @@ class Settings(BaseSettings):
     DB_NAME: str
     DB_USER: str
     DB_PASSWORD: str
+    KAFKA_BOOTSTRAP_SERVER: str | None = None
+    KAFKA_CLIENT_ID: str | None = None
+    KAFKA_LOG_TOPIC: str | None = None
+
 
 settings = Settings()
 
